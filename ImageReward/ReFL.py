@@ -21,7 +21,7 @@ import torch
 import torch.nn.functional as F
 import torch.utils.checkpoint
 import transformers
-from accelerate import Accelerator #,DeepSpeedPlugin
+from accelerate import Accelerator ,DeepSpeedPlugin
 from accelerate.logging import get_logger
 from accelerate.utils import ProjectConfiguration, set_seed
 from datasets import load_dataset
@@ -365,14 +365,14 @@ class Trainer(object):
 
         accelerator_project_config = ProjectConfiguration(total_limit=args.checkpoints_total_limit)
 
-        #deepspeed_plugin = deepspeed_plugin = DeepSpeedPlugin(zero_stage=3, gradient_clipping=1.0)
+        deepspeed_plugin = deepspeed_plugin = DeepSpeedPlugin(zero_stage=2, gradient_clipping=1.0)
         self.accelerator = Accelerator(
             gradient_accumulation_steps=args.gradient_accumulation_steps,
             mixed_precision=args.mixed_precision,
             log_with=args.report_to,
             project_dir=logging_dir,
             project_config=accelerator_project_config,
-            #deepspeed_plugin=deepspeed_plugin
+            deepspeed_plugin=deepspeed_plugin
         )
 
         # Make one log on every process with the configuration for debugging.
